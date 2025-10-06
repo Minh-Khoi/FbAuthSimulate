@@ -1,0 +1,43 @@
+version: '3.8'
+
+# This Docker Compose file is dedicated to code generation.
+# It defines services that run once to generate server and client code
+# from the OpenAPI specification and then exit.
+
+services:
+  # Service to generate the Spring Boot server code
+  springboot-generator:
+    image: openapitools/openapi-generator-cli:v7.5.0
+    container_name: springboot_generator
+    volumes:
+      - ./configs:/specs:ro
+      - ../application_springboot:/app/application_springboot
+    command: >
+      generate
+      -i /specs/openapi.yaml
+      -g spring
+      -o /app/application_springboot
+      --additional-properties=groupId=com.example,artifactId=auth-service,apiPackage=com.example.authservice.api,modelPackage=com.example.authservice.model,sourceFolder=src/main/java,interfaceOnly=true
+    profiles:
+      - springboot
+      - app
+
+  # Service to generate the Angular client code
+  angular-generator:
+    image: openapitools/openapi-generator-cli:v7.5.0
+    container_name: angular_generator
+    volumes:
+      - ./configs:/specs:ro
+      - ../application_angular:/app/application_angular
+    command: >
+      generate
+      -i /specs/openapi.yaml
+      -g typescript-angular
+      -o /app/application_angular/projects/api-client/src/lib
+      --additional-properties=ngVersion=16,npmName=auth-api-client,npmVersion=1.0.0,stringEnums=true,ngPackagr=false
+    profiles:
+      - angular
+      - app
+
+# To generate code, run the following command from your project root directory (FbAuthSimulate2):
+# docker compose -f docker_compose_files/docker-compose-openapi.yaml up

@@ -1,0 +1,167 @@
+openapi: 3.0.3
+info:
+  title: Authentication Service API
+  description: |-
+    An API for user registration and authentication, simulating a Facebook-like auth mechanism.
+    It uses JWT for securing endpoints.
+  version: 1.0.0
+servers:
+  - url: http://localhost:8080/api/v1
+    description: Local development server
+
+tags:
+  - name: Auth
+    description: Operations for user authentication (login, logout, token refresh).
+  - name: Users
+    description: Operations for user management (registration, profile).
+
+paths:
+  /users/register:
+    post:
+      tags:
+        - Users
+      summary: Register a new user
+      description: Creates a new user account with the provided credentials.
+      operationId: registerUser
+      requestBody:
+        description: User registration details
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserCredentials'
+      responses:
+        '201':
+          description: User created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserProfile'
+        '400':
+          description: Invalid input (e.g., missing fields, invalid email)
+        '409':
+          description: User with this email already exists
+
+  /auth/login:
+    post:
+      tags:
+        - Auth
+      summary: Log in a user
+      description: Authenticates a user and returns a JWT access token and a refresh token.
+      operationId: loginUser
+      requestBody:
+        description: User login credentials
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserCredentials'
+      responses:
+        '200':
+          description: Successful authentication
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthTokens'
+        '401':
+          description: Unauthorized (invalid credentials)
+
+  /auth/refresh:
+    post:
+      tags:
+        - Auth
+      summary: Refresh an access token
+      description: Uses a refresh token to issue a new access token.
+      operationId: refreshToken
+      requestBody:
+        description: The refresh token to use.
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                refreshToken:
+                  type: string
+                  example: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+      responses:
+        '200':
+          description: New tokens generated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthTokens'
+        '401':
+          description: Unauthorized (invalid or expired refresh token)
+
+  /users/me:
+    get:
+      tags:
+        - Users
+      summary: Get current user's profile
+      description: Fetches the profile of the currently authenticated user.
+      operationId: getMyProfile
+      security:
+        - bearerAuth: [] # This endpoint is protected
+      responses:
+        '200':
+          description: Successful retrieval of user profile
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserProfile'
+        '401':
+          description: Unauthorized (missing or invalid token)
+
+components:
+  schemas:
+    UserCredentials:
+      type: object
+      required:
+        - email
+        - password
+      properties:
+        email:
+          type: string
+          format: email
+          example: user@example.com
+        password:
+          type: string
+          format: password
+          minLength: 8
+          example: "Str0ngP@ssw0rd!"
+
+    UserProfile:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          example: "123e4567-e89b-12d3-a456-426614174000"
+        name:
+          type: string
+          example: "John Doe"
+        email:
+          type: string
+          format: email
+          example: user@example.com
+        createdAt:
+          type: string
+          format: date-time
+
+    AuthTokens:
+      type: object
+      properties:
+        accessToken:
+          type: string
+          example: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+        refreshToken:
+          type: string
+          example: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      description: "Enter JWT Bearer token **_only_**"

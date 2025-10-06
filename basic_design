@@ -1,0 +1,15 @@
+├── application_angular
+├── application_springboot
+├── docker_compose_files
+│   ├── configs
+│   │   └── openapi.yaml
+│   ├── docker-compose-application.yaml
+│   ├── docker-compose-openapi.yaml
+│   └── env
+│       ├── application.env
+│       └── openapi.env
+└── nginx
+    └── nginx.conf
+
+
+

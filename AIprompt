@@ -1,0 +1,1 @@
+I want to generate a service which simulate the mechanism of Facebook Authenthication, using docker to containerize and openapi to generate code. Please help me design and write a docker-compose.yaml file and openapi.yaml

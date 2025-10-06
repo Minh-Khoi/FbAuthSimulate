@@ -1,0 +1,41 @@
+# Git itself
+# .gitignore
+
+# IDEs and editors
+.idea/
+application_springboot/.idea/
+.project
+.classpath
+.c9/
+*.launch
+.settings/
+*.sublime-workspace
+
+# Visual Studio Code
+.vscode/
+application_angular/.vscode/
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+.history/
+
+# Compiled output
+/dist/
+/tmp/
+/out-tsc/
+/bazel-out/
+application_angular/dist/
+
+# Node
+/node_modules/
+application_angular/node_modules/
+npm-debug.log
+yarn-error.log
+
+# Miscellaneous
+/.angular/
+application_angular/.angular/
+application_springboot/.openapi-generator/
+.sass-cache/
+/coverage/
