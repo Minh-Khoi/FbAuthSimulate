@@ -39,3 +39,7 @@ application_angular/.angular/
 application_springboot/.openapi-generator/
 .sass-cache/
 /coverage/
+
+# Maven
+# /target/
+# /build/
