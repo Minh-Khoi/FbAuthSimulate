@@ -41,5 +41,5 @@ application_springboot/.openapi-generator/
 /coverage/
 
 # Maven
-# /target/
+target/
 # /build/
